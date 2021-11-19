@@ -1,31 +1,14 @@
-import type { LinksFunction, LoaderFunction } from "remix";
-import {
-  Meta,
-  Links,
-  Scripts,
-  useLoaderData,
-  LiveReload,
-  useCatch
-} from "remix";
-import { Outlet } from "react-router-dom";
+import type { LinksFunction } from 'remix'
+import { Meta, Links, Scripts, LiveReload, useCatch } from 'remix'
+import { Outlet } from 'react-router-dom'
 
-import stylesUrl from "./styles/global.css";
+import stylesUrl from './styles/global.css'
 
 export let links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: stylesUrl }];
-};
+  return [{ rel: 'stylesheet', href: stylesUrl }]
+}
 
-export let loader: LoaderFunction = async () => {
-  return { date: new Date() };
-};
-
-function Document({
-  children,
-  title
-}: {
-  children: React.ReactNode;
-  title?: string;
-}) {
+function Document({ children, title }: { children: React.ReactNode; title?: string }) {
   return (
     <html lang="en">
       <head>
@@ -38,27 +21,22 @@ function Document({
       <body>
         {children}
         <Scripts />
-        {process.env.NODE_ENV === "development" && <LiveReload />}
+        {process.env.NODE_ENV === 'development' && <LiveReload />}
       </body>
     </html>
-  );
+  )
 }
 
 export default function App() {
-  let data = useLoaderData();
-
   return (
     <Document>
       <Outlet />
-      <footer>
-        <p>This page was rendered at {data.date.toLocaleString()}</p>
-      </footer>
     </Document>
-  );
+  )
 }
 
 export function CatchBoundary() {
-  let caught = useCatch();
+  let caught = useCatch()
 
   switch (caught.status) {
     case 401:
@@ -69,26 +47,21 @@ export function CatchBoundary() {
             {caught.status} {caught.statusText}
           </h1>
         </Document>
-      );
+      )
 
     default:
-      throw new Error(
-        `Unexpected caught response with status: ${caught.status}`
-      );
+      throw new Error(`Unexpected caught response with status: ${caught.status}`)
   }
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error);
+  console.error(error.stack)
 
   return (
     <Document title="Uh-oh!">
       <h1>App Error</h1>
       <pre>{error.message}</pre>
-      <p>
-        Replace this UI with what you want users to see when your app throws
-        uncaught errors.
-      </p>
+      <p>Replace this UI with what you want users to see when your app throws uncaught errors.</p>
     </Document>
-  );
+  )
 }
